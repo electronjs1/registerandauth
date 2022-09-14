@@ -139,7 +139,6 @@ public OnGameModeInit()
 		print("[MySQL] Подключение присутствует!");
 	}
 	SetGameModeText(SERVER_VERSION);
-	OnPlayerSpawn();
 	SendRconCommand("hostname "SERVER_HOSTNAME"");
 	SendRconCommand("mapname "SERVER_MAPNAME"");
 	SendRconCommand("weburl "SERVER_WEBSITE"");
@@ -157,6 +156,9 @@ public OnPlayerRequestClass(playerid, classid)
 }
 public OnPlayerConnect(playerid)
 {
+	if(IsPlayerNPC(playerid))
+		return 1;
+		
 	new string[126];
 	SCM(playerid, COLOR_BLUEGREEN, "Добро пожаловать на сервере {"#COLOR_YELLOW"}"SERVER_HOSTNAME".");
 	GetPlayerName(playerid, pInfo[playerid][Name], MAX_PLAYER_NAME);
@@ -188,9 +190,9 @@ public OnPlayerDisconnect(playerid, reason)
 }
 public OnPlayerSpawn(playerid)
 {
-	SetPlayerPos(playerid, 1562.0521, 1613.3821, 15.4728);
-	SetPlayerCameraPos(playerid, 1562.0521, 1613.3821, 15.4728);
-	SetPlayerCameraLookAt(playerid, 1562.0521, 1613.3821, 15.4728);
+	//SetPlayerPos(playerid, 1562.0521, 1613.3821, 15.4728);
+	//SetPlayerCameraPos(playerid, 1562.0521, 1613.3821, 15.4728);
+	//SetPlayerCameraLookAt(playerid, 1562.0521, 1613.3821, 15.4728);
 	return 1;
 }
 public OnPlayerDeath(playerid, killerid, reason)
