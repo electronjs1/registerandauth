@@ -1,0 +1,9 @@
+.bash_logout
+.bashrc
+.profile
+announce
+LICENSE
+README
+server_log.txt
+gamemodes/*.amx
+.vscode
