@@ -287,6 +287,7 @@ public OnVehicleStreamOut(vehicleid, forplayerid)
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	new string[1024];
+	new name = GetPlayerName(playerid);
 
 	switch(dialogid)
 	{
@@ -352,6 +353,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(TempInfo[playerid][temp_promo], 11, "%s", inputtext);
 			if(pInfo[playerid][Sex] == 1) ShowModelSelectionMenu(playerid, "MALE SKINS", MODEL_SELECTION_SKINS_REGISTER, male_regskins);
 			else if(pInfo[playerid][Sex] == 2) ShowModelSelectionMenu(playerid, "FEMALE SKINS", MODEL_SELECTION_SKINS_REGISTER, female_regskins);
+			mysql_format(connection, string, sizeof string, "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`) VALUES (`%s`, `%s`, `%s`, `%d`, `%s`, `%s`, `%d`)", name, 
+			TempInfo[playerid][temp_password], TempInfo[playerid][temp_email], pInfo[playerid][Sex], TempInfo[playerid][temp_referal], TempInfo[playerid][temp_promo], pInfo[playerid][Skin]);
+			mysql_tquery(connection, string, "", "", "");
 		}
 	}
 	/*DLG_REG_PROMO:
