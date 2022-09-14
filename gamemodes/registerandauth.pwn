@@ -354,13 +354,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else if(pInfo[playerid][Sex] == 2) ShowModelSelectionMenu(playerid, "FEMALE SKINS", MODEL_SELECTION_SKINS_REGISTER, female_regskins);
 		}
 	}
-	/*DLG_REG_PROMO:
-	{
-		
-		if(pInfo[playerid][Sex] = 1) ShowModelSelectionMenu(playerid, "_", MODEL_SELECTION_SKINS_REGISTER, male_regskins, sizeof(male_regskins));
-		else if(pInfo[playerid][Sex] = 2) ShowModelSelectionMenu(playerid, "_", MODEL_SELECTION_SKINS_REGISTER, female_regskins, sizeof(female_regskins));
-	}
-	LOGIN: 
+
+	/*LOGIN: 
 	{
 
 	}*/
