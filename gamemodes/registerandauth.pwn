@@ -126,7 +126,7 @@ public OnPlayerConnect(playerid)
 		return 1;
 
 	SendClientMessage(playerid, COLOR_BLUEC, "Добро пожаловать!");
-	new string[144];
+	new string[256];
 	//new query[256];
 	//format(query, sizeof(query), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}*Для регистрации игрового аккаунта, Вам необходимо ввести пароль:");
 	//SPD(playerid, DLG_REG_PASS, DSI, "{"COLOR_MAIN"}Регистрация | Пароль", query, "Далее", "Отмена");
@@ -138,6 +138,7 @@ public OnPlayerConnect(playerid)
 forward checkRegister(playerid);
 public checkRegister(playerid)
 {
+	print("2");
 	new rows;
 	cache_get_row_count(rows);
 	
@@ -159,9 +160,8 @@ public OnPlayerDisconnect(playerid, reason)
 }
 public OnPlayerSpawn(playerid)
 {
-	//SetPlayerPos(playerid, 1562.0521, 1613.3821, 15.4728);
-	//SetPlayerCameraPos(playerid, 1562.0521, 1613.3821, 15.4728);
-	//SetPlayerCameraLookAt(playerid, 1562.0521, 1613.3821, 15.4728);
+	SetPlayerPos(playerid, 1562.0521, 1613.3821, 15.4728);
+	SetPlayerSkin(playerid, pInfo[playerid][Skin]);
 	return 1;
 }
 public OnPlayerDeath(playerid, killerid, reason)
@@ -287,8 +287,7 @@ public OnVehicleStreamOut(vehicleid, forplayerid)
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	new string[1024];
-	new name = GetPlayerName(playerid);
-
+	print("1");
 	switch(dialogid)
 	{
 		case DLG_REG_PASS:
@@ -353,9 +352,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(TempInfo[playerid][temp_promo], 11, "%s", inputtext);
 			if(pInfo[playerid][Sex] == 1) ShowModelSelectionMenu(playerid, "MALE SKINS", MODEL_SELECTION_SKINS_REGISTER, male_regskins);
 			else if(pInfo[playerid][Sex] == 2) ShowModelSelectionMenu(playerid, "FEMALE SKINS", MODEL_SELECTION_SKINS_REGISTER, female_regskins);
-			mysql_format(connection, string, sizeof string, "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`) VALUES (`%s`, `%s`, `%s`, `%d`, `%s`, `%s`, `%d`)", name, 
-			TempInfo[playerid][temp_password], TempInfo[playerid][temp_email], pInfo[playerid][Sex], TempInfo[playerid][temp_referal], TempInfo[playerid][temp_promo], pInfo[playerid][Skin]);
-			mysql_tquery(connection, string, "", "", "");
 		}
 	}
 	/*DLG_REG_PROMO:
@@ -380,9 +376,17 @@ public OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ)
 }
 public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 {
+
 	if(extraid == MODEL_SELECTION_SKINS_REGISTER && response == MODEL_RESPONSE_SELECT)
 	{
 		pInfo[playerid][Skin] = modelid;
+		new string[256];
+		new name[MAX_PLAYER_NAME];
+		GetPlayerName(playerid, name, sizeof(name));
+		mysql_format(connection, string, sizeof string, "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`, `logged`, `money`) VALUES (`%s`, `%s`, `%s`, `%d`, `%s`, `%s`, `%d`)", name, 
+		TempInfo[playerid][temp_password], TempInfo[playerid][temp_email], pInfo[playerid][Sex], TempInfo[playerid][temp_referal], TempInfo[playerid][temp_promo], pInfo[playerid][Skin], 0, 0);
+		mysql_query(connection, string);
+		SpawnPlayer(playerid);
 	}
 }
 //=====================================================================================
