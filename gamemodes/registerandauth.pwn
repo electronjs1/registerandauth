@@ -5,6 +5,7 @@ main(){}
 #include <sscanf2>
 #include <streamer>
 #include <Pawn.CMD>
+#include <mSelection>
 //============================================================================== SETTINGS SERVER
 #define SERVER_HOSTNAME             			"TEST"
 #define SERVER_VERSION              			"0.0.1"
@@ -84,6 +85,9 @@ main(){}
 #define 	DST 		DIALOG_STYLE_TABLIST
 #define 	DSTH 		DIALOG_STYLE_TABLIST_HEADERS
 
+#define MODEL_SELECTION_SKINS_REGISTER      (1)
+
+
 #define public:%0(%1) forward%0(%1); public%0(%1) 
 enum PLAYER_INFO
 {
@@ -95,6 +99,11 @@ enum PLAYER_INFO
 	Skin,
 	bool: Logged,
 	Money
+}
+enum TEMP_INFO
+{
+	temp_password[64];
+	temp_email[64];
 }
 enum
 {
@@ -108,11 +117,9 @@ enum
 }
 //============================================================================== OTHER 2
 new pInfo[MAX_PLAYERS][PLAYER_INFO];
+new TempInfo[MAX_PLAYERS][TEMP_INFO];
 new MySQL: connection;
-new Menu:skinsm;
-new Menu:skinsf;
-	skinsm = CreateMenu("SKINS MALE", 4, 200.0, 100.0, 150.0, 150.0);
-	skinsf = CreateMenu("SKINS FEMALE", 4, 200.0, 100.0, 150.0, 150.0);
+
 ////////////////////////////////////////////////////////////////////////////////
 public OnGameModeInit()
 {
@@ -293,26 +300,50 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!(12 <= strlen(inputtext) <= 24))
 			{
 				format(string, sizeof(string), "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, введите пароль\n\n{"#COLOR_LIGHTRED"}Ошибка: Длина пароля должна состовлять, от 12 до 24 символов");
-				SPD(playerid, DLG_REG_PASS, DSI, "{"#COLOR_BLUE"}Регистрация | Пароль", string, "Далее" "Отмена"
+				SPD(playerid, DLG_REG_PASS, DSI, "{"#COLOR_BLUE"}Регистрация | Пароль", string, "Далее", "Отмена");
 			}
 			if(IsTextRussian(inputtext))
 			{
 				format(string, sizeof(string), "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, введите пароль\n\n{"#COLOR_LIGHTRED"}Ошибка: Запрещенно использовать русские символы");
-				SPD(playerid, DLG_REG_PASS, DSI, "{"#COLOR_BLUE"}Регистрация | Пароль", string, "Далее" "Отмена"
+				SPD(playerid, DLG_REG_PASS, DSI, "{"#COLOR_BLUE"}Регистрация | Пароль", string, "Далее", "Отмена");
+			}
+			else
+			{
+				format(TempInfo[playerid][temp_password], 16, "%s", inputtext);
+				SPD(playerid, DLG_REG_EMAIL, DSI, "Регистрация | E-Mail", "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, введите Ваш существующий E-mail\n{"#COLOR_BLUE"}Если же, у Вас не имеет E-mail, можете нажать *Пропустить*", "Далее", "Пропустить");
+				//SPD(playerid, DLG_REG_REFERAL, DSI, "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, введите игровой псевдоним человека, который Вас пригласил.\n{"#COLOR_BLUE"}Если же Вы узнали о сервере от другого источника, можете нажать *Пропустить*", "Далее", "Пропустить");
 			}
 		}
 	}
 	DLG_REG_EMAIL:
 	{
-
+		if(!response)
+		{
+			if(strfind(inputtext, "@", true) == -1 || strfind(inputtext, ".", true) == -1)
+			{
+				format(string, sizeof(string), "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, введите Ваш существующий E-mail\n{"#COLOR_LIGHTRED"}Ошибка: Такого E-Mail не существует, должны присутствовать знаки *@ и .*");
+				SPD(playerid, DLG_REG_EMAIL, DSI, "Регистрация | E-Mail", string, "Далее", "Пропустить");
+			}
+			if(IsTextRussian(inputtext))
+			{
+				format(string, sizeof(string), "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, введите Ваш существующий E-mail\n{"#COLOR_LIGHTRED"}Ошибка: Такого E-Mail не существует, должны присутствовать знаки *@ и .*");
+				SPD(playerid, DLG_REG_EMAIL, DSI, "Регистрация | E-Mail", string, "Далее", "Пропустить");
+			}
+			else
+			{
+				format(TempInfo[playerid][temp_email], 16, "%s", inputtext);
+				SPD(playerid, DLG_REG_EMAIL, 0, "Регистрация | Выбор пола", "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, выберите пол", "Мужской", "Женский");
+			}
+		}
 	}
 	DLG_REG_SEX:
 	{
-
+		pInfo[playerid][Sex] = ((response) ? 1 : 2)
+		SPD(playerid, DLG_REG_REFERAL, DSI, "{"#COLOR_YELLOW"}Данный аккаунт не зарегистрирован.\n{"#COLOR_YELLOW"}Для регистрации игрового аккаунта, пожалуйста, введите игровой псевдоним человека, который Вас пригласил.\n{"#COLOR_BLUE"}Если же Вы узнали о сервере от другого источника, можете нажать *Пропустить*", "Далее", "Пропустить");
 	}
 	DLG_REG_REFERAL:
 	{
-
+		
 	}
 	DLG_REG_PROMO:
 	{
