@@ -6,6 +6,7 @@ main(){}
 #include <streamer>
 #include <Pawn.CMD>
 #include <eSelection>
+#include <TOTP>
 //============================================================================== SETTINGS SERVER
 #define SERVER_HOSTNAME             			"TEST"
 #define SERVER_VERSION              			"0.0.1"
@@ -15,9 +16,9 @@ main(){}
 #define SERVER_FORUM							""
 #define SERVER_LANGUAGE							"Russian"
 //============================================================================== MYSQL CONNECT
-#define MYSQL_HOST                  			"localhost"
+#define MYSQL_HOST                  			"127.0.0.1"
 #define MYSQL_USER                  			"root"
-#define MYSQL_PASS                  			"root"
+#define MYSQL_PASS                  			""
 #define MYSQL_BASE                  			"datebaze"
 //============================================================================== COLORS DIALOGS
 #define COLOR_MAIN "4682B4"//Основной
@@ -125,7 +126,7 @@ public OnPlayerConnect(playerid)
 {
 	if(IsPlayerNPC(playerid))
 		return 1;
-
+	OnPlayerSpawn(playerid);
 	SendClientMessage(playerid, COLOR_BLUEC, "Добро пожаловать!");
 	new string[256];
 	//new query[256];
@@ -154,12 +155,6 @@ public checkRegister(playerid)
 	}
 	return 1;
 }
-forward CreateAccount(playerid);
-public CreateAccount(playerid) 
-{
-	pInfo[playerid][ID] == cache_insert_id();
-	return 1;
-}
 
 public OnPlayerDisconnect(playerid, reason)
 {
@@ -167,8 +162,6 @@ public OnPlayerDisconnect(playerid, reason)
 }
 public OnPlayerSpawn(playerid)
 {
-	SetPlayerPos(playerid, 1685.5687, -2330.9680, 13.5469);
-	SetPlayerSkin(playerid, pInfo[playerid][Skin]);
 	return 1;
 }
 public OnPlayerDeath(playerid, killerid, reason)
@@ -364,15 +357,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!(12 <= strlen(inputtext) >= 24))
 			{
-				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистрирован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.{"COLOR_LIGHTRED"}* Ошибка: Длина пароля должна составлять, от 12 до 24 символов.");
+				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистрирован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.\n{"COLOR_LIGHTRED"}* Ошибка: Длина пароля должна составлять, от 12 до 24 символов.");
 				SPD(playerid, DLG_LOGIN, DSI, "Авторизация", string, "Далее", "Отмена");
 			}
 			if(IsTextRussian(inputtext))
 			{
-				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистриарован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.{"COLOR_LIGHTRED"}* Ошибка: Запрещено использовать русские символы");
+				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистриарован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.\n{"COLOR_LIGHTRED"}* Ошибка: Запрещено использовать русские символы");
 				SPD(playerid, DLG_LOGIN, DSI, "Авторизация", string, "Далее", "Отмена");
 			}
-			
+			return 1;
 		}
 	}
 	return 1;
@@ -397,8 +390,9 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 		GetPlayerName(playerid, name, sizeof(name));
 		format(string, sizeof(string), "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`, `logged`, `money`) VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%d', '%d', '%d')", name, 
 		TempInfo[playerid][temp_password], TempInfo[playerid][temp_email], pInfo[playerid][Sex], TempInfo[playerid][temp_referal], TempInfo[playerid][temp_promo], pInfo[playerid][Skin], 0, 0);
-		mysql_tquery(connection, string, "CreateAccount", "i", playerid);
-		SpawnPlayer(playerid);
+		mysql_tquery(connection, string, "", "");
+		SetPlayerPos(playerid, 1685.5687, -2330.9680, 13.5469);
+		SetPlayerSkin(playerid, pInfo[playerid][Skin]);
 	}
 }
 //=====================================================================================
