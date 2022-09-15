@@ -291,7 +291,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		case DLG_REG_PASS:
 		{
-			if(!(12 <= strlen(inputtext) >= 24))
+			if(strlen(inputtext) < 12 || strlen(inputtext) > 24)
 			{
 				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите пароль\n\n{"COLOR_LIGHTRED"}* Ошибка: Длина пароля должна составлять, от 12 до 24 символов");
 				SPD(playerid, DLG_REG_PASS, DSI, "{"COLOR_MAIN"}Регистрация | Пароль", string, "Далее", "Отмена");
@@ -355,7 +355,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DLG_LOGIN:
 		{
-			if(!(12 <= strlen(inputtext) >= 24))
+			if(strlen(inputtext) < 12 || strlen(inputtext) > 24)
 			{
 				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистрирован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.\n{"COLOR_LIGHTRED"}* Ошибка: Длина пароля должна составлять, от 12 до 24 символов.");
 				SPD(playerid, DLG_LOGIN, DSI, "Авторизация", string, "Далее", "Отмена");

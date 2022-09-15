@@ -151,3 +151,78 @@
 [14:07:12] [DEBUG] cache_get_row_count: return value: '1' (C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\a_mysql.inc:182 -> c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:142)
 [14:07:12] [DEBUG] AMX callback executed with error '0'
 [14:07:12] [INFO] Callback successfully executed.
+[14:15:58] [WARNING] mysql_connect: no password specified (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:98 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\Pawn.CMD.inc:127 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:210)
+[14:15:58] [INFO] changed log level from 'warning, error' to 'debug, info, warning, error'
+[14:15:58] [DEBUG] CThreadedConnection::WorkerFunc(this=0x4254020, connection=0x4254020)
+[14:18:09] [DEBUG] mysql_tquery(1, "SELECT * FROM `accounts` WHERE `name` = 'electron.js' LIMIT 1", "checkRegister", "d") (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:137 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:241)
+[14:18:09] [DEBUG] CCallback::Create(amx=0x2b37c28, name='checkRegister', format='d', params=0x3d6ae50, param_offset=5)
+[14:18:09] [DEBUG] CCallback::Create - callback index for 'checkRegister': 46
+[14:18:09] [DEBUG] processing specifier 'd' with parameter index 0
+[14:18:09] [DEBUG] retrieved and pushed value '0'
+[14:18:09] [INFO] Callback 'checkRegister' set up for delayed execution.
+[14:18:09] [DEBUG] created delayed callback with 1 parameter
+[14:18:09] [DEBUG] CHandle::Execute(this=0x5c1140, type=1, query=0x5eff18)
+[14:18:09] [DEBUG] CConnection::Execute(query=0x5eff18, this=0x3eb9020, connection=0x621338)
+[14:18:09] [DEBUG] CQuery::Execute(this=0x5eff18, connection=0x621338)
+[14:18:09] [ERROR] error #2013 while executing query "SELECT * FROM `accounts` WHERE `name` = 'electron.js' LIMIT 1": Lost connection to MySQL server during query (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:137 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:241)
+[14:18:09] [DEBUG] CConnection::GetError(this=0x3eb9020, connection=0x621338)
+[14:18:09] [DEBUG] CHandle::Execute - return value: true
+[14:18:09] [DEBUG] mysql_tquery: return value: '1' (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:137 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:241)
+[14:18:09] [DEBUG] CCallback::Create(amx=0x2b37c28, name='OnQueryError', format='dsssd)
+[14:18:09] [DEBUG] CCallback::Create - callback index for 'OnQueryError': -10047
+[14:18:09] [DEBUG] processing specifier 'd'
+[14:18:09] [DEBUG] retrieved and pushed value '2013'
+[14:18:09] [DEBUG] processing specifier 's'
+[14:18:09] [DEBUG] retrieved and pushed value 'Lost connection to MySQL server during query'
+[14:18:09] [DEBUG] processing specifier 's'
+[14:18:09] [DEBUG] retrieved and pushed value 'checkRegister'
+[14:18:09] [DEBUG] processing specifier 's'
+[14:18:09] [DEBUG] retrieved and pushed value 'SELECT * FROM `accounts` WHERE `name` = 'electron.js' LIMIT 1'
+[14:18:09] [DEBUG] processing specifier 'd'
+[14:18:09] [DEBUG] retrieved and pushed value '1'
+[14:18:09] [INFO] Callback 'OnQueryError' set up for delayed execution.
+[14:18:09] [DEBUG] created delayed callback with 5 parameters
+[14:18:09] [DEBUG] CCallback::Execute(amx=0x2b37c28, index=-10047, num_params=5)
+[14:18:09] [INFO] Executing callback 'Ý[' with 5 parameters...
+[14:18:09] [DEBUG] processing internal specifier 'c'
+[14:18:09] [DEBUG] pushed value '1' onto AMX stack
+[14:18:09] [DEBUG] processing internal specifier 's'
+[14:18:09] [DEBUG] pushed value 'SELECT * FROM `accounts` WHERE `name` = 'electron.js' LIMIT 1' onto AMX stack
+[14:18:09] [DEBUG] processing internal specifier 's'
+[14:18:09] [DEBUG] pushed value 'checkRegister' onto AMX stack
+[14:18:09] [DEBUG] processing internal specifier 's'
+[14:18:09] [DEBUG] pushed value 'Lost connection to MySQL server during query' onto AMX stack
+[14:18:09] [DEBUG] processing internal specifier 'c'
+[14:18:09] [DEBUG] pushed value '2013' onto AMX stack
+[14:18:09] [DEBUG] executing AMX callback with index '-10047'
+[14:18:09] [DEBUG] AMX callback executed with error '0'
+[14:18:09] [INFO] Callback successfully executed.
+[14:20:34] [WARNING] mysql_connect: no password specified (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:98 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\Pawn.CMD.inc:127 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:210)
+[14:20:34] [INFO] changed log level from 'warning, error' to 'debug, info, warning, error'
+[14:20:34] [DEBUG] CThreadedConnection::WorkerFunc(this=0x4254020, connection=0x4254020)
+[14:21:15] [DEBUG] mysql_tquery(1, "SELECT * FROM `accounts` WHERE `name` = 'electron.js' LIMIT 1", "checkRegister", "d") (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:137 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:241)
+[14:21:15] [DEBUG] CCallback::Create(amx=0x2bf7c28, name='checkRegister', format='d', params=0x3de1e50, param_offset=5)
+[14:21:15] [DEBUG] CCallback::Create - callback index for 'checkRegister': 46
+[14:21:15] [DEBUG] processing specifier 'd' with parameter index 0
+[14:21:15] [DEBUG] retrieved and pushed value '0'
+[14:21:15] [INFO] Callback 'checkRegister' set up for delayed execution.
+[14:21:15] [DEBUG] created delayed callback with 1 parameter
+[14:21:15] [DEBUG] CHandle::Execute(this=0x6412c0, type=1, query=0x6824c0)
+[14:21:15] [DEBUG] CConnection::Execute(query=0x6824c0, this=0x3efb020, connection=0x6a4920)
+[14:21:15] [DEBUG] CQuery::Execute(this=0x6824c0, connection=0x6a4920)
+[14:21:15] [DEBUG] CHandle::Execute - return value: true
+[14:21:15] [DEBUG] mysql_tquery: return value: '1' (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:137 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:241)
+[14:21:15] [INFO] query "SELECT * FROM `accounts` WHERE `name` = 'electron.js' LIMIT 1" successfully executed within 326.706 milliseconds
+[14:21:15] [DEBUG] CResultSet::Create(connection=0x6a4920, query_str='SELECT * FROM `accounts` WHERE `name` = 'electron.js' LIMIT 1')
+[14:21:15] [DEBUG] created new resultset '0x677838'
+[14:21:15] [DEBUG] fetched MySQL result '0x666ff0'
+[14:21:15] [DEBUG] allocated 84 bytes for PAWN result
+[14:21:15] [DEBUG] CCallback::Execute(amx=0x2bf7c28, index=46, num_params=1)
+[14:21:15] [INFO] Executing callback 'checkRegister' with 1 parameter...
+[14:21:15] [DEBUG] processing internal specifier 'c'
+[14:21:15] [DEBUG] pushed value '0' onto AMX stack
+[14:21:15] [DEBUG] executing AMX callback with index '46'
+[14:21:15] [DEBUG] cache_get_row_count(0x03DE22C8) (C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\a_mysql.inc:182 -> c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:142)
+[14:21:15] [DEBUG] cache_get_row_count: return value: '1' (C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\a_mysql.inc:182 -> c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:142)
+[14:21:15] [DEBUG] AMX callback executed with error '0'
+[14:21:15] [INFO] Callback successfully executed.
