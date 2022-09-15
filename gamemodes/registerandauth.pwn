@@ -15,9 +15,9 @@ main(){}
 #define SERVER_FORUM							""
 #define SERVER_LANGUAGE							"Russian"
 //============================================================================== MYSQL CONNECT
-#define MYSQL_HOST                  			"127.0.0.1"
+#define MYSQL_HOST                  			"localhost"
 #define MYSQL_USER                  			"root"
-#define MYSQL_PASS                  			""
+#define MYSQL_PASS                  			"root"
 #define MYSQL_BASE                  			"datebaze"
 //============================================================================== COLORS DIALOGS
 #define COLOR_MAIN "4682B4"//Основной
@@ -104,6 +104,7 @@ public OnGameModeInit()
 	{
 		print("[MySQL] Подключение присутствует!");
 	}
+	mysql_log(ALL);
 	SetGameModeText(SERVER_VERSION);
 	SendRconCommand("hostname "SERVER_HOSTNAME"");
 	SendRconCommand("mapname "SERVER_MAPNAME"");
@@ -130,7 +131,7 @@ public OnPlayerConnect(playerid)
 	//new query[256];
 	//format(query, sizeof(query), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}*Для регистрации игрового аккаунта, Вам необходимо ввести пароль:");
 	//SPD(playerid, DLG_REG_PASS, DSI, "{"COLOR_MAIN"}Регистрация | Пароль", query, "Далее", "Отмена");
-	//GetPlayerName(playerid, pInfo[playerid][Name], MAX_PLAYER_NAME);
+	GetPlayerName(playerid, pInfo[playerid][Name], MAX_PLAYER_NAME);
 	format(string, sizeof(string), "SELECT * FROM `accounts` WHERE `name` = '%s' LIMIT 1", pInfo[playerid][Name]);
 	mysql_tquery(connection, string, "checkRegister", "d", playerid);
 	return 1;
@@ -138,9 +139,9 @@ public OnPlayerConnect(playerid)
 forward checkRegister(playerid);
 public checkRegister(playerid)
 {
-	new rows;
-	cache_get_row_count(rows);
-	
+	new 
+		rows = cache_num_rows();
+
 	new string[214 + MAX_PLAYER_NAME];
 	if(rows)
 	{
@@ -394,7 +395,7 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 		new string[256];
 		new name[MAX_PLAYER_NAME];
 		GetPlayerName(playerid, name, sizeof(name));
-		format(string, sizeof(string), "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`, `logged`, `money`) VALUES (`%s`, `%s`, `%s`, `%d`, `%s`, `%s`, `%d`)", name, 
+		format(string, sizeof(string), "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`, `logged`, `money`) VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%d', '%d', '%d')", name, 
 		TempInfo[playerid][temp_password], TempInfo[playerid][temp_email], pInfo[playerid][Sex], TempInfo[playerid][temp_referal], TempInfo[playerid][temp_promo], pInfo[playerid][Skin], 0, 0);
 		mysql_tquery(connection, string, "CreateAccount", "i", playerid);
 		SpawnPlayer(playerid);

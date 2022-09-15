@@ -1,1 +1,0 @@
-[10:52:07] [plugins/mysql] error #2013 while executing query "SELECT * FROM `accounts` WHERE `name` = '' LIMIT 1": Lost connection to MySQL server during query (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:135 -> C:\Users\User\Desktop\Projects\REGISTER AND AUTH\pawno\include\sscanf2.inc:241)
