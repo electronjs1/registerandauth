@@ -6,7 +6,7 @@ main(){}
 #include <streamer>
 #include <Pawn.CMD>
 #include <eSelection>
-#include <TOTP>
+#include <Pawn.Regex>
 //============================================================================== SETTINGS SERVER
 #define SERVER_HOSTNAME             			"TEST"
 #define SERVER_VERSION              			"0.0.1"
@@ -23,6 +23,7 @@ main(){}
 //============================================================================== FORWARDS
 forward OnPlayerKick(playerid);
 forward checkRegister(playerid);
+forward checkPromo(playerid);
 //============================================================================== COLORS DIALOGS
 #define COLOR_MAIN "4682B4"//Основной
 #define COLOR_WHITE "FFFFFF"//белый
@@ -61,6 +62,9 @@ forward checkRegister(playerid);
 #define MODEL_SELECTION_SKINS_REGISTER      (0)
 
 #define public:%0(%1) forward%0(%1); public%0(%1) 
+/*#define IsValidEmail(%1) \
+    regex_match(%1, "[a-zA-Z0-9_\\.]+@([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,4}")*/
+
 enum PLAYER_INFO
 {
 	ID,
@@ -72,7 +76,8 @@ enum PLAYER_INFO
 	Referal,
 	Promo,
 	bool: Logged,
-	Money
+	Money,
+	IP
 }
 enum TEMP_INFO
 {
@@ -141,6 +146,7 @@ public OnPlayerConnect(playerid)
 	//format(query, sizeof(query), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}*Для регистрации игрового аккаунта, Вам необходимо ввести пароль:");
 	//SPD(playerid, DLG_REG_PASS, DSI, "{"COLOR_MAIN"}Регистрация | Пароль", query, "Далее", "Отмена");
 	GetPlayerName(playerid, pInfo[playerid][Name], MAX_PLAYER_NAME);
+	GetPlayerIp(playerid, pInfo[playerid][IP], 36);
 	format(string, sizeof(string), "SELECT * FROM `accounts` WHERE `name` = '%s' LIMIT 1", pInfo[playerid][Name]);
 	mysql_tquery(connection, string, "checkRegister", "d", playerid);
 	return 1;
@@ -154,7 +160,8 @@ public checkRegister(playerid)
 	new 
 		rows = cache_num_rows();
 
-	new string[214 + MAX_PLAYER_NAME];
+	new string[256 + MAX_PLAYER_NAME];
+
 	if(rows)
 	{
 		format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистрирован.\n{"COLOR_YELLOW"}* Для авторизации игрового аккаунта, пожалуйста, введите пароль:");
@@ -163,6 +170,21 @@ public checkRegister(playerid)
 	else {
 		format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите пароль:");
 		SPD(playerid, DLG_REG_PASS, DSI, "{"COLOR_MAIN"}Регистрация | Пароль", string, "Далее", "Отмена");
+	}
+	return 1;
+}
+
+public checkPromo(playerid)
+{
+	new
+		rows = cache_num_rows();
+
+	if(rows)
+	{
+		SPD(playerid, DLG_REG_SKIN, DSI, "{"COLOR_MAIN"}Регистрация | Промокод", "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите выданый Вам промокод\n{"#COLOR_YELLOW"}* Если же, у Вас не имеется выданного промокода, можете нажать *Пропустить*", "Далее", "Пропустить");
+	}
+	else {
+		SCM(playerid, COLOR_LIGHTREDC, "Ошибка: Данного промокода не существует!");
 	}
 	return 1;
 }
@@ -306,20 +328,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(!strlen(inputtext) || strlen(inputtext) < 12 || strlen(inputtext) > 24)
+				if(strlen(inputtext) < 12 || strlen(inputtext) > 24)
 				{
-					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите пароль\n\n{"COLOR_LIGHTRED"}* Ошибка: Длина пароля должна составлять, от 12 до 24 символов");
-					SPD(playerid, DLG_REG_PASS, DSI, "{"COLOR_MAIN"}Регистрация | Пароль", string, "Далее", "Отмена");
+					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не заренистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите пароль\n\n{"COLOR_LIGHTRED"}* Ошибка: Длина пароля должна составлять, от 12 до 24 символов.");
+					SPD(playerid, DLG_REG_PASS, DSI, "Регистрация | Пароль", string, "Далее", "Отмена");
 				}
 				if(IsTextRussian(inputtext))
 				{
-					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите пароль\n\n{"COLOR_LIGHTRED"}* Ошибка: Запрещенно использовать русские символы");
-					SPD(playerid, DLG_REG_PASS, DSI, "{"COLOR_MAIN"}Регистрация | Пароль", string, "Далее", "Отмена");
+					format(string, sizeof(string), "{"COLOR_YELLOW"}*Данный аккаунт не зарегистрирова.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите\n\n{"COLOR_YELLOW"}* Ошибка: Вы использовали русские символы в пароле.");
+					SPD(playerid, DLG_REG_PASS, DSI, "Регистрация | Пароль", string, "Далее", "Отмена");
 				}
-				else
+				else 
 				{
 					format(TempInfo[playerid][temp_password], 24, "%s", inputtext);
 					SPD(playerid, DLG_REG_EMAIL, DSI, "{"COLOR_MAIN"}Регистрация | E-Mail", "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите Ваш существующий E-mail\n{"#COLOR_YELLOW"}* Если же, у Вас не имеет E-mail, можете нажать *Пропустить*", "Далее", "Пропустить");
+
 				}
 				return 1;
 			}
@@ -327,54 +350,37 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DLG_REG_EMAIL:
 		{
-			if(response)
+			if(strfind(inputtext, "@", true) || strfind(inputtext, ".", true))
 			{
-				if(strfind(inputtext, "@", true) == -1 || strfind(inputtext, ".", true) == -1)
-				{
-					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите Ваш существующий E-mail\n{"COLOR_LIGHTRED"}* Ошибка: Такого E-Mail не существует, должны присутствовать знаки *@ и .*");
-					SPD(playerid, DLG_REG_EMAIL, DSI, "{"COLOR_MAIN"}Регистрация | E-Mail", string, "Далее", "Пропустить");
-				}
-				if(IsTextRussian(inputtext))
-				{
-					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите Ваш существующий E-mail\n{"COLOR_LIGHTRED"}* Ошибка: Такого E-Mail не существует, должны присутствовать знаки *@ и .*");
-					SPD(playerid, DLG_REG_EMAIL, DSI, "{"COLOR_MAIN"}Регистрация | E-Mail", string, "Далее", "Пропустить");
-				}
-				else
-				{
-					format(TempInfo[playerid][temp_email], 64, "%s", inputtext);
-					SPD(playerid, DLG_REG_SEX, 0, "{"COLOR_MAIN"}Регистрация | Выбор пола", "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, выберите пол", "Мужской", "Женский");
-				}
-				return 1;
+				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите Ваш существующий E-mail\n{"COLOR_LIGHTRED"}* Ошибка: Такого E-Mail не существует, должны присутствовать знаки *@ и .*");
+				SPD(playerid, DLG_REG_EMAIL, DSI, "{"COLOR_MAIN"}Регистрация | E-Mail", string, "Далее", "Пропустить");
 			}
-			KickMessage(playerid, COLOR_LIGHTREDC, CANCEL_REG);
+			else
+			{
+				format(TempInfo[playerid][temp_email], 64, "%s", inputtext);
+				SPD(playerid, DLG_REG_SEX, 0, "{"COLOR_MAIN"}Регистрация | Выбор пола", "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, выберите пол", "Мужской", "Женский");
+			}
+			return 1;
 		}
 		case DLG_REG_SEX:
 		{
-			if(response)
-			{
-				pInfo[playerid][Sex] = ((response) ? 1 : 2);
-				SPD(playerid, DLG_REG_REFERAL, DSI, "{"COLOR_MAIN"}Регистрация | Реферальная система", "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите игровой псевдоним человека, который Вас пригласил.\n{"#COLOR_YELLOW"}* Если же Вы узнали о сервере от другого источника, можете нажать *Пропустить*", "Далее", "Пропустить");
-				return 1;
-			}
-			KickMessage(playerid, COLOR_LIGHTREDC, CANCEL_REG);
+			pInfo[playerid][Sex] = ((response) ? 1 : 2);
+			SPD(playerid, DLG_REG_REFERAL, DSI, "{"COLOR_MAIN"}Регистрация | Реферальная система", "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите игровой псевдоним человека, который Вас пригласил.\n{"COLOR_YELLOW"}* Если же Вы узнали о сервере от другого источника, можете нажать *Пропустить*", "Далее", "Пропустить");
+			return 1;
 		}
 		case DLG_REG_REFERAL:
 		{
-			if(response)
+			if(IsTextRussian(inputtext))
 			{
-				if(IsTextRussian(inputtext))
-				{
-					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите игровой псевдоним человека, который Вас пригласил.\n{"COLOR_LIGHTRED"}* Ошибка: Вы использовали символы русской расскладки.");
-					SPD(playerid, DLG_REG_REFERAL, DSI, "{"COLOR_MAIN"}Регистрация | Реферальная система", string, "Далее", "Пропустить");
-				}
-				else
-				{
-					format(TempInfo[playerid][temp_referal], 24, "%s", inputtext);
-					SPD(playerid, DLG_REG_SKIN, DSI, "{"COLOR_MAIN"}Регистрация | Промокод", "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите выданый Вам промокод\n{"#COLOR_YELLOW"}* Если же, у Вас не имеется выданного промокода, можете нажать *Пропустить*", "Далее", "Пропустить");
-				}
-				return 1;
+				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистарции игрового аккаунта, пожалуйста, введите игровой псевдоним человека, который Вас пригласил.\n{"COLOR_YELLOW"}* Ошибка: Вы использовали русские символы.");
+				SPD(playerid, DLG_REG_REFERAL, DSI, "Регистрация | Реферальная система", string, "Далее", "Пропустить");
 			}
-			KickMessage(playerid, COLOR_LIGHTREDC, CANCEL_REG);
+			else
+			{
+				format(string, sizeof(string), "SELECT * FORM `promocods` WHERE `promo` = '%s' LIMIT 1", TempInfo[playerid][temp_promo]);
+				mysql_tquery(connection, string, "CheckPromo", "d", playerid);
+			}
+			return 1;
 		}
 		case DLG_REG_SKIN:
 		{
@@ -387,15 +393,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(!strlen(inputtext) || strlen(inputtext) < 12 || strlen(inputtext) > 24)
+				if(strlen(inputtext) < 12 || strlen(inputtext) > 24)
 				{
 					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистрирован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.\n{"COLOR_LIGHTRED"}* Ошибка: Длина пароля должна составлять, от 12 до 24 символов.");
 					SPD(playerid, DLG_LOGIN, DSI, "Авторизация", string, "Далее", "Отмена");
 				}
 				if(IsTextRussian(inputtext))
 				{
-					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистриарован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.\n{"COLOR_LIGHTRED"}* Ошибка: Запрещено использовать русские символы");
-					SPD(playerid, DLG_LOGIN, DSI, "Авторизация", string, "Далее", "Отмена");
+					format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт зарегистрирован.\n{"COLOR_YELLOW"}* Для авторизации в игровой аккаунт, пожалуйста, введите пароль.\n{"COLOR_LIGHTRED"}* Ошибка: Вы использовали русские символы.");
+					SPD(playerid, DLG_LOGIN, DSI, "Регистрация | Авторизация", string, "Далее", "Пропустить");
 				}
 				return 1;
 			}
@@ -422,8 +428,8 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 		new string[256];
 		new name[MAX_PLAYER_NAME];
 		GetPlayerName(playerid, name, sizeof(name));
-		format(string, sizeof(string), "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`, `logged`, `money`) VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%d', '%d', '%d')", name, 
-		TempInfo[playerid][temp_password], TempInfo[playerid][temp_email], pInfo[playerid][Sex], TempInfo[playerid][temp_referal], TempInfo[playerid][temp_promo], pInfo[playerid][Skin], 0, 0);
+		format(string, sizeof(string), "INSERT INTO `accounts` (`name`, `password`, `email`, `sex`, `referal`, `promo`, `skin`, `logged`, `money`, regip) VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%d', '%d', '%d', '%s')", name, 
+		TempInfo[playerid][temp_password], TempInfo[playerid][temp_email], pInfo[playerid][Sex], TempInfo[playerid][temp_referal], TempInfo[playerid][temp_promo], pInfo[playerid][Skin], 0, 0, pInfo[playerid][IP]);
 		mysql_tquery(connection, string, "", "");
 		SpawnPlayer(playerid);
 	}
@@ -471,4 +477,11 @@ stock KickMessage(playerid, color, message[])
 	SetTimer("OnPlayerKick", 2000, true);
 	return true;
 }
+/*stock IsValidEmail(const email[])
+{
+  static Regex:regex;
+  if (!regex) regex = Regex_New("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+
+  return Regex_Check(email, regex);
+}*/
 //=====================================================================================
