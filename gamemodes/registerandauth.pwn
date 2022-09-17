@@ -25,7 +25,7 @@ forward OnPlayerKick(playerid);
 forward checkRegister(playerid);
 forward checkPromo(playerid);
 //============================================================================== COLORS DIALOGS
-#define COLOR_MAIN "4682B4"//Основной
+#define COLOR_MAIN "42AAFF"//Основной
 #define COLOR_WHITE "FFFFFF"//белый
 #define COLOR_BLACK "0E0101" //черный
 #define COLOR_GREY "C3C3C3"//серый
@@ -46,6 +46,7 @@ forward checkPromo(playerid);
 #define COLOR_BLUEC 0x0000BBAA 
 #define COLOR_WHITEC 0xFFFFFFAA 
 #define COLOR_LIGHTREDC 0xDC143CAA
+#define COLOR_BLUELC 0x3F888FAA
 //============================================================================== OTHER
 #define 	SCM 		SendClientMessage
 #define     SCMTA       SendClientMessageToAll
@@ -142,7 +143,7 @@ public OnPlayerConnect(playerid)
 	if(IsPlayerNPC(playerid))
 		return 1;
 
-	SendClientMessage(playerid, COLOR_BLUEC, "Добро пожаловать!");
+	SendClientMessage(playerid, COLOR_BLUELC, "Добро пожаловать!");
 	new string[256];
 	GetPlayerName(playerid, pInfo[playerid][Name], MAX_PLAYER_NAME);
 	GetPlayerIp(playerid, pInfo[playerid][IP], 36);
@@ -384,7 +385,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SPD(playerid, DLG_REG_REFERAL, DSI, "{"COLOR_MAIN"}Регистрация | Реферальная система", string, "Далее", "Пропустить");
 			}
 			else {
-				format(TempInfo[playerid][temp_referal]);
+				format(TempInfo[playerid][temp_referal], 24, "%s", inputtext);
 				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите выданый Вам промокод\n{"#COLOR_YELLOW"}* Если же, у Вас не имеется выданного промокода, можете нажать *Пропустить*");
 				SPD(playerid, DLG_REG_PROMO, DSI, "{"COLOR_MAIN"}Регистрация | Промокод", string, "Далее", "Пропустить");
 			}
@@ -437,6 +438,7 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 public OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ)
 {
 	SetPlayerPos(playerid, fX, fY, fZ);
+	SCM(playerid, COLOR_BLUELC, "Вы телепортировались");
 	return 1;
 }
 public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
