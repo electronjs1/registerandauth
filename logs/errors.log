@@ -1,4 +1,2 @@
-[18:57:42] [plugins/mysql] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
-[18:57:44] [plugins/mysql] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
-[18:57:46] [plugins/mysql] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
-[18:57:49] [plugins/mysql] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
+[12:50:17] [plugins/mysql] error #1064 while executing query "SELECT * FORM `promocods` WHERE `promo` = 'fsdfsdf' LIMIT 1": You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FORM `promocods` WHERE `promo` = 'fsdfsdf' LIMIT 1' at line 1 (c:\Users\User\Desktop\Projects\REGISTER AND AUTH\gamemodes\registerandauth.pwn:406)
+[12:50:17] [log-core] exception 0XC0000005 (ACCESS_VIOLATION) from Vectored Exception Handler catched; shutting log-core down
