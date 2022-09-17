@@ -385,7 +385,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SPD(playerid, DLG_REG_REFERAL, DSI, "{"COLOR_MAIN"}Регистрация | Реферальная система", string, "Далее", "Пропустить");
 			}
 			else {
-				format(TempInfo[playerid][temp_referal], 24, "%s", inputtext);
+				format(TempInfo[playerid][temp_referal], 24, "%s", inputtext);/
 				format(string, sizeof(string), "{"COLOR_YELLOW"}* Данный аккаунт не зарегистрирован.\n{"COLOR_YELLOW"}* Для регистрации игрового аккаунта, пожалуйста, введите выданый Вам промокод\n{"#COLOR_YELLOW"}* Если же, у Вас не имеется выданного промокода, можете нажать *Пропустить*");
 				SPD(playerid, DLG_REG_PROMO, DSI, "{"COLOR_MAIN"}Регистрация | Промокод", string, "Далее", "Пропустить");
 			}
